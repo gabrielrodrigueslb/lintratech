@@ -1,16 +1,16 @@
 "use client";
 import { Button } from "@/src/components/ui/button";
-import { ArrowRight, Mail, Linkedin, Instagram } from "lucide-react";
+import { ArrowRight, Mail, Instagram } from "lucide-react"; // Removido 'Linkedin'
 import { FaWhatsapp } from "react-icons/fa";
 import { useLanguage } from "@/src/contexts/LanguageContext";
 import { useState } from "react";
 import ProjectModal from "./ProjectModal";
 import { useTheme } from "@/src/contexts/ThemeContext";
-
+import Image from "next/image"; // Importado para otimização
 
 export default function Contact() {
   const { t } = useLanguage();
-  const { theme, setTheme } = useTheme();
+  const { theme } = useTheme(); // Removido 'setTheme' pois não era usado
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
@@ -45,8 +45,13 @@ export default function Contact() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 border-t border-border pt-16">
           <div className="col-span-1 md:col-span-2">
             <div className="flex items-center gap-2 mb-6">
-              <div className="w-10 h-10 flex items-center justify-center  rounded-sm">
-                <span className="font-display font-bold text-lg text-primary">{theme === 'dark' ? <img src="/logo_dark.png" alt="Logo lintra tech" /> : <img src="/logo_light.png" alt="Logo lintra tech" />}</span>
+              <div className="w-10 h-10 flex items-center justify-center rounded-sm relative"> {/* Adicionado 'relative' para o Image fill */}
+                {/* Substituído <img> por <Image /> com otimização */}
+                {theme === 'dark' ? (
+                  <Image src="/logo_dark.png" alt="Logo lintra tech" width={40} height={40} />
+                ) : (
+                  <Image src="/logo_light.png" alt="Logo lintra tech" width={40} height={40} />
+                )}
               </div>
               <span className="font-display font-bold text-xl">Lintra Tech</span>
             </div>
@@ -54,13 +59,10 @@ export default function Contact() {
               {t('hero.title.1')} {t('hero.title.2')}
             </p>
             <div className="flex gap-4">
-              {/* <a href="#" className="w-10 h-10 flex items-center justify-center border border-border hover:border-primary hover:text-primary transition-colors bg-card">
-                <Linkedin className="w-5 h-5" />
-              </a> */}
-              <a href="https://api.whatsapp.com/send?phone=5531984056082&text=Ol%C3%A1%21%20Vim%20pelo%20site%20gostaria%20de%20conversar%20sobre%20o%20desenvolvimento%20de%20uma%20solu%C3%A7%C3%A3o%20digital%20para%20o%20meu%20neg%C3%B3cio.%20Podemos%20falar%3F" target="_blank" className="w-10 h-10 flex items-center justify-center border border-border hover:border-primary hover:text-primary transition-colors bg-card">
+              <a href="https://api.whatsapp.com/send?phone=5531984056082&text=Ol%C3%A1%21%20Vim%20pelo%20site%20gostaria%20de%20conversar%20sobre%20o%20desenvolvimento%20de%20uma%20solu%C3%A7%C3%A3o%20digital%20para%20o%20meu%20neg%C3%B3cio.%20Podemos%20falar%3F" target="_blank" rel="noopener noreferrer" className="w-10 h-10 flex items-center justify-center border border-border hover:border-primary hover:text-primary transition-colors bg-card">
                 <FaWhatsapp className="w-5 h-5" />
               </a>
-              <a href="https://www.instagram.com/lintratech/" target="_blank" className="w-10 h-10 flex items-center justify-center border border-border hover:border-primary hover:text-primary transition-colors bg-card">
+              <a href="https://www.instagram.com/lintratech/" target="_blank" rel="noopener noreferrer" className="w-10 h-10 flex items-center justify-center border border-border hover:border-primary hover:text-primary transition-colors bg-card">
                 <Instagram className="w-5 h-5" />
               </a>
             </div>
@@ -81,7 +83,7 @@ export default function Contact() {
             <ul className="space-y-3 text-muted-foreground font-mono text-sm">
               <li className="flex items-center gap-2">
                 <Mail className="w-4 h-4 text-primary" />
-                <a href="mailto:hello@company.com" className="hover:text-primary transition-colors">lintratechnologies@gmail.com</a>
+                <a href="mailto:lintratechnologies@gmail.com" className="hover:text-primary transition-colors">lintratechnologies@gmail.com</a>
               </li>
               <li className="flex items-center gap-2">
                 <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />

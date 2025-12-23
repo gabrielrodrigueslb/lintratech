@@ -1,80 +1,65 @@
-"use client"; // <--- OBRIGATÓRIO PARA USAR HOOKS (useState)
+"use client";
 
 import { useState } from "react";
-// Troque o Link do wouter pelo do Next
 import Link from "next/link"; 
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
 import { Search, MessageSquare } from "lucide-react"; // ...outros imports
 import Navbar from "@/src/components/Navbar";
 import Contact from "@/src/components/Contact";
-import { useLanguage } from "@/src/contexts/LanguageContext";
+/* import { useLanguage } from "@/src/contexts/LanguageContext"; */
 import { Card, CardContent, CardFooter, CardHeader } from "@/src/components/ui/card";
 import { Badge } from "@/src/components/ui/badge";
+import Image from "next/image";
 
-const categories = ["ALL", "WEB APPLICATION", "FINTECH", "REACT NEXT.JS", "REACT NATIVE"];
+const categories = ["ALL", "WEB APPLICATION", "WEB SYSTEM", "ERP"];
 
 const projects = [
   {
-    id: 1,
-    title: "Digital Products Platform | Get Now",
-    category: "WEB APPLICATION",
-    tags: ["FINTECH", "PROJECT MANAGEMENT", "ATTENTION TO DETAIL"],
-    image: "https://images.unsplash.com/photo-1563986768609-322da13575f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-    description: "A comprehensive platform for managing digital products with integrated payment processing and analytics dashboard."
-  },
-  {
-    id: 2,
-    title: "Payment Gateway & Banking App | Get Pay",
-    category: "FINTECH",
-    tags: ["BANKING", "PROJECT MANAGEMENT", "PROBLEM SOLVING"],
-    image: "https://images.unsplash.com/photo-1563013544-824ae1b704d3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-    description: "Secure payment gateway solution with real-time transaction monitoring and fraud detection systems."
-  },
-  {
-    id: 3,
-    title: "Fintech Platform | SeerCard",
-    category: "REACT NEXT.JS",
-    tags: ["TEAM COLLABORATION", "PROBLEM SOLVING", "UI/UX"],
-    image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-    description: "Modern credit card management interface allowing users to track spending, set limits, and analyze financial habits."
-  },
-  {
-    id: 4,
-    title: "Banking App | Ártico Capital",
-    category: "REACT NATIVE",
-    tags: ["UX/UI", "ATTENTION TO DETAIL", "ANALYTICAL THINKING"],
-    image: "https://images.unsplash.com/photo-1616077168079-7e09a677fb2c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-    description: "Mobile banking application focused on investment portfolio management and crypto asset tracking."
-  },
-  {
-    id: 5,
-    title: "E-commerce Dashboard",
-    category: "WEB APPLICATION",
-    tags: ["DASHBOARD", "ANALYTICS", "SAAS"],
-    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-    description: "Powerful admin panel for e-commerce owners to manage inventory, orders, and customer data."
-  },
-  {
-    id: 6,
-    title: "Health & Fitness Tracker",
-    category: "REACT NATIVE",
-    tags: ["HEALTH", "FITNESS", "MOBILE"],
-    image: "https://images.unsplash.com/photo-1510936111840-65e151ad71bb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80",
-    description: "Mobile app for tracking workouts, nutrition, and sleep patterns with social sharing features."
-  }, 
-  {
     id: 7,
-    title: "Hub de Links | Bio Connect",
-    category: "WEB APPLICATION",
-    tags: ["REDES SOCIAIS", "MARKETING", "MOBILE FIRST"],
-    image: "/capa-insta.png",
-    description: "Uma solução de 'Link na Bio' totalmente personalizável que centraliza sua presença digital, com métricas de cliques integradas e temas adaptáveis à identidade da marca."
-  }
+    title: 'Hub de Links | Bio Connect',
+    category: 'WEB APPLICATION',
+    tags: ['REDES SOCIAIS', 'MARKETING', 'MOBILE FIRST'],
+    image: '/capa-insta.png',
+    description: "Uma solução de 'Link na Bio' totalmente personalizável.",
+  },
+
+  {
+    id: 8,
+    title: 'Sistema de Agendamentos | SmartSchedule',
+    category: 'WEB SYSTEM',
+    tags: ['AGENDAMENTOS', 'SAAS', 'UX/UI', 'ESCALABILIDADE'],
+    image:
+      'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1000&q=80',
+    description:
+      'Plataforma para agendamentos online de barbearias e salões, com gestão de serviços, horários, profissionais e clientes.',
+  },
+
+  {
+    id: 9,
+    title: 'Sistema de Gestão Escolar | EduManager',
+    category: 'WEB SYSTEM',
+    tags: ['GESTÃO ESCOLAR', 'ADMINISTRATIVO', 'DASHBOARD', 'AUTOMAÇÃO'],
+    image:
+      'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1000&q=80',
+    description:
+      'Sistema web para gestão escolar com controle de matrículas, alunos, responsáveis, formulários online e painel administrativo.',
+  },
+
+  {
+    id: 10,
+    title: 'Painel Administrativo | ERP Empresarial',
+    category: 'ERP',
+    tags: ['ERP', 'ADMINISTRATIVO', 'GESTÃO', 'NEGÓCIOS'],
+    image:
+      'https://images.unsplash.com/photo-1556155092-8707de31f9c4?auto=format&fit=crop&w=1000&q=80',
+    description:
+      'Painel administrativo (ERP) para controle de produtos, serviços, usuários e operações, com visual moderno e foco em produtividade.',
+  },
 ];
 
 export default function Catalog() {
-  const { t } = useLanguage();
+  /* const { t } = useLanguage(); */
   const [activeCategory, setActiveCategory] = useState("ALL");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -125,14 +110,18 @@ export default function Catalog() {
             {filteredProjects.map((project) => (
               <Card key={project.id} className="bg-card border-border overflow-hidden group rounded-none hover:border-primary transition-all duration-500 flex flex-col">
                 <div className="relative aspect-4/3 overflow-hidden">
+                <Link href={`/project/${project.id}`}>
+                
                   <div className="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity z-10 mix-blend-overlay" />
-                  <img 
+                  <Image 
                     src={project.image} 
                     alt={project.title} 
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0"
+                    fill // Usa o container pai (relative aspect-4/3) como referência
+                    className="object-cover transition-transform duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
                   <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity z-20 flex flex-col justify-end p-6">
-                    <Link href={`/project/${project.id}`}>
+                    {/* <Link href={`/project/${project.id}`}>
                       <Button className="w-full bg-primary text-black hover:bg-primary/90 rounded-none font-bold mb-2">
                         VER DETALHES
                       </Button>
@@ -143,15 +132,19 @@ export default function Catalog() {
                       onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' })}
                     >
                       SOLICITAR ORÇAMENTO
-                    </Button>
+                    </Button> */}
                   </div>
+                  </Link>
                 </div>
                 
                 <CardHeader className="pb-2">
                   <div className="flex justify-between items-start">
                     <div className="space-y-1">
                       <h4 className="font-mono text-[10px] text-primary tracking-widest uppercase">{project.category}</h4>
+                      <Link href={`/project/${project.id}`}>
                       <h3 className="font-display font-bold text-xl group-hover:text-primary transition-colors">{project.title}</h3>
+                      </Link>
+                      
                     </div>
                   </div>
                 </CardHeader>

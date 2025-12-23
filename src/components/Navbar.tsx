@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 // Removido o Link não usado
 import { usePathname, useRouter } from "next/navigation";
-import { Menu, X, Moon, Sun, Globe } from "lucide-react";
+import { Menu, X, Moon, Sun/* , Globe */ } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import { cn } from "@/src/lib/utils";
 import { useLanguage } from "@/src/contexts/LanguageContext";
@@ -16,7 +16,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
   
-  const { t, language, setLanguage } = useLanguage();
+  const { t, /* language, setLanguage */ } = useLanguage();
   const { theme, setTheme } = useTheme();
 
   useEffect(() => {
@@ -50,7 +50,7 @@ export default function Navbar() {
     { name: t('nav.contact'), href: "/#contact", action: () => scrollToSection('contact') },
   ];
 
-  const toggleLanguage = () => setLanguage(language === 'pt' ? 'en' : 'pt');
+  /* const toggleLanguage = () => setLanguage(language === 'pt' ? 'en' : 'pt'); */
   const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark');
 
   return (

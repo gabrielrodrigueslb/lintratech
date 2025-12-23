@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/src/components/ui/button";
-import { Mail, MapPin, Calendar, Download } from "lucide-react";
+import { Mail, MapPin, Calendar/* , Download  */} from "lucide-react";
 import { useLanguage } from "@/src/contexts/LanguageContext";
 import Image from "next/image";
 
@@ -79,9 +79,9 @@ export default function About() {
                   {t('about.cta')}
                 </a>
               </Button>
-              <Button variant="outline" className="border-border hover:bg-muted rounded-none font-mono px-8">
+              {/* <Button variant="outline" className="border-border hover:bg-muted rounded-none font-mono px-8">
                 <Download className="mr-2 w-4 h-4" /> {t('about.download')}
-              </Button>
+              </Button> */}
             </div>
           </div>
         </div>

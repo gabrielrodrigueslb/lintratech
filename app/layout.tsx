@@ -1,34 +1,113 @@
 import type { Metadata } from "next";
-import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google"; // Importe as fontes
+import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/src/components/Providers";
 
-// Configuração da Fonte Principal (Sans)
-const inter = Inter({ 
+/* =========================
+   FONTES
+========================= */
+const inter = Inter({
   subsets: ["latin"],
-  variable: "--font-inter", // Define o nome da variável CSS
+  variable: "--font-inter",
   display: "swap",
 });
 
-// Configuração da Fonte de Títulos (Display)
-const spaceGrotesk = Space_Grotesk({ 
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   variable: "--font-space-grotesk",
   display: "swap",
 });
 
-// Configuração da Fonte Mono (Código/Detalhes)
-const jetbrainsMono = JetBrains_Mono({ 
+const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
   variable: "--font-jetbrains-mono",
   display: "swap",
 });
 
+/* =========================
+   SEO / METADATA
+========================= */
 export const metadata: Metadata = {
-  title: "Lintra Tech",
-  description: "Soluções Digitais",
+  title: {
+    default: "Lintra Tech",
+    template: "%s | Lintra Tech",
+  },
+  description:
+    "A Lintra Tech desenvolve sites, sistemas e aplicações web modernas, focadas em performance, SEO e experiência do usuário.",
+  keywords: [
+    "desenvolvimento web",
+    "criação de sites",
+    "sistemas web",
+    "software sob medida",
+    "frontend",
+    "react",
+    "next.js",
+    "lintra tech",
+    "Aplicativo",
+    "Sistema",
+    "ERP",
+    "Sistema empresarial",
+    "Programador",
+    "Landing page"
+  ],
+  authors: [{ name: "Lintra Tech" }],
+  creator: "Lintra Tech",
+  publisher: "Lintra Tech",
+
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-snippet": -1,
+      "max-image-preview": "large",
+      "max-video-preview": -1,
+    },
+  },
+
+  category: "technology",
+
+  alternates: {
+    canonical: "https://www.lintratech.cloud",
+  },
+
+  openGraph: {
+    title: "Lintra Tech | Soluções Digitais Inteligentes",
+    description:
+      "Sites e sistemas modernos, rápidos e otimizados para SEO. Desenvolvidos com as melhores tecnologias do mercado.",
+    url: "https://www.lintratech.cloud",
+    siteName: "Lintra Tech",
+    locale: "pt_BR",
+    type: "website",
+    images: [
+      {
+        url: "/banner-lintra.png",
+        width: 1200,
+        height: 630,
+        alt: "Lintra Tech - Soluções Digitais",
+      },
+    ],
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "Lintra Tech | Soluções Digitais",
+    description:
+      "Desenvolvimento de sites e sistemas web modernos, rápidos e escaláveis.",
+    images: ["/banner-lintra.png"],
+  },
+
+  icons: {
+    icon: "/icon.png",
+    shortcut: "/icon.png",
+    apple: "/icon.png",
+  },
 };
 
+/* =========================
+   ROOT LAYOUT
+========================= */
 export default function RootLayout({
   children,
 }: {
@@ -36,8 +115,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-br" suppressHydrationWarning>
-      <body 
-        // Juntamos as variáveis de todas as fontes aqui
+      <body
         className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} antialiased`}
       >
         <Providers>{children}</Providers>
