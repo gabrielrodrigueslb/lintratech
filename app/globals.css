@@ -140,6 +140,9 @@ html{
   * {
     @apply border-border outline-ring/50;
   }
+  html{
+     @apply bg-background;
+  }
   body {
     @apply bg-background text-foreground font-sans antialiased;
     background-image: radial-gradient(circle at 50% 50%, oklch(0.1 0 0) 1px, transparent 1px);
