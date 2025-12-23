@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/src/components/Providers";
@@ -23,6 +23,14 @@ const jetbrainsMono = JetBrains_Mono({
   variable: "--font-jetbrains-mono",
   display: "swap",
 });
+
+export const viewport: Viewport = {
+  // Define a cor da barra de status e do overscroll
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#fafafa" }, // Cor do seu --background light
+    { media: "(prefers-color-scheme: dark)", color: "#050505" },  // Cor do seu --background dark
+  ],
+};
 
 /* =========================
    SEO / METADATA

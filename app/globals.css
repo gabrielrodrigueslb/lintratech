@@ -141,7 +141,7 @@ html{
     @apply border-border outline-ring/50;
   }
   html{
-     @apply bg-background;
+     background-color: var(--background);
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
