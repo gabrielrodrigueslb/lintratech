@@ -15,7 +15,7 @@ export async function getSiteData() {
       {
         cache: 'force-cache', 
         next: {
-          revalidate: 5, // 5 segundos
+          revalidate: 0, // 5 segundos
         },
       },
     );
