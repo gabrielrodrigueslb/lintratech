@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, Space_Grotesk, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/src/components/Providers";
+import { getSiteData } from "@/src/lib/api";
 
 /* =========================
    FONTES
@@ -27,8 +28,8 @@ const jetbrainsMono = JetBrains_Mono({
 export const viewport: Viewport = {
   // Define a cor da barra de status e do overscroll
   themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#fafafa" }, // Cor do seu --background light
-    { media: "(prefers-color-scheme: dark)", color: "#050505" },  // Cor do seu --background dark
+    { media: "(prefers-color-scheme: dark)", color: "#050505" }, // Prioridade para dark
+    { media: "(prefers-color-scheme: light)", color: "#fafafa" },
   ],
 };
 
@@ -116,17 +117,18 @@ export const metadata: Metadata = {
 /* =========================
    ROOT LAYOUT
 ========================= */
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const siteData = await getSiteData()
   return (
     <html lang="pt-br" suppressHydrationWarning>
       <body
         className={`${inter.variable} ${spaceGrotesk.variable} ${jetbrainsMono.variable} antialiased`}
       >
-        <Providers>{children}</Providers>
+        <Providers siteData={siteData}>{children}</Providers>
       </body>
     </html>
   );

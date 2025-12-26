@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image'; // Importação do componente otimizado
+import Image from 'next/image';
 import { Button } from '@/src/components/ui/button';
 import {
   ArrowLeft,
@@ -16,19 +16,8 @@ import Contact from '@/src/components/Contact';
 import { useLanguage } from '@/src/contexts/LanguageContext';
 import { Badge } from '@/src/components/ui/badge';
 
-interface Project {
-  title: string;
-  category: string;
-  tags: string[];
-  image: string;
-  description: string;
-  challenge?: string;
-  solution?: string;
-  technologies: string[];
-  year: string;
-  role: string;
-  link?: string;
-}
+// CORREÇÃO: Importe o tipo correto em vez de redefinir incorretamente
+import type { Project } from '@/src/types/project';
 
 interface ClientProjectWrapperProps {
   project: Project;
@@ -48,12 +37,11 @@ export default function ClientProjectWrapper({
         <div className="w-full h-[40vh] md:h-[60vh] relative overflow-hidden">
           <div className="absolute inset-0 bg-linear-to-t from-background to-transparent z-10" />
 
-          {/* SUBSTITUIÇÃO 1: Imagem de Capa com 'fill' e 'priority' */}
           <Image
-            src={project.image}
+            src={project.banner}
             alt={project.title}
             fill
-            priority // Carrega com prioridade por estar no topo (LCP)
+            priority
             className="object-cover"
           />
 
@@ -69,8 +57,15 @@ export default function ClientProjectWrapper({
             <h1 className="font-display font-bold text-4xl md:text-6xl lg:text-7xl max-w-4xl mb-4">
               {project.title}
             </h1>
-            <div className="flex flex-wrap gap-3">
-              {project.tags.map((tag) => (
+            
+            {/* CORREÇÃO VISUAL: Se você quiser exibir a Categoria aqui também */}
+            <div className="flex flex-wrap gap-3 items-center">
+               <Badge className="bg-primary text-primary-foreground hover:bg-primary/90">
+                 {/* Lembre-se: project.category agora é um objeto, acesse .name */}
+                 {project.category.name}
+               </Badge>
+               {/* Tags existentes */}
+               {project.tags.map((tag) => (
                 <Badge
                   key={tag}
                   variant="outline"
@@ -121,10 +116,10 @@ export default function ClientProjectWrapper({
               <div className="pt-8 relative aspect-video">
                 {/* SUBSTITUIÇÃO 2: Imagem de Detalhe com 'fill' */}
                 <Image
-                  src={project.image}
+                  src={project.banner}
                   alt="Project Detail"
                   fill
-                  className="rounded-sm border border-border grayscale hover:grayscale-0 transition-all duration-500 object-cover"
+                  className="rounded-sm border border-border md:grayscale hover:grayscale-0 transition-all duration-500 object-cover"
                 />
               </div>
             </div>

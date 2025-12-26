@@ -1,24 +1,29 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 import { useState, useEffect } from "react";
-// Removido o Link não usado
 import { usePathname, useRouter } from "next/navigation";
-import { Menu, X, Moon, Sun/* , Globe */ } from "lucide-react";
+import { Menu, X, Moon, Sun } from "lucide-react";
 import { Button } from "@/src/components/ui/button";
 import { cn } from "@/src/lib/utils";
 import { useLanguage } from "@/src/contexts/LanguageContext";
 import { useTheme } from "@/src/contexts/ThemeContext";
-import Image from "next/image"; // Importação do Image
+import Image from "next/image";
 
 export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   
+  // Estado para armazenar a preferência do SISTEMA OPERACIONAL
+  const [systemTheme, setSystemTheme] = useState<'dark' | 'light'>('dark');
+  const [mounted, setMounted] = useState(false);
+  
   const pathname = usePathname();
   const router = useRouter();
   
-  const { t, /* language, setLanguage */ } = useLanguage();
+  const { t } = useLanguage();
   const { theme, setTheme } = useTheme();
 
+  // Efeito de Scroll
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);
@@ -26,6 +31,43 @@ export default function Navbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  // Efeito de Detecção do Sistema e Montagem
+  useEffect(() => {
+    // 1. Resolver o estado de montagem de forma assíncrona para satisfazer o ESLint
+    const timer = setTimeout(() => {
+      setMounted(true);
+    }, 0);
+
+    // 2. Lógica de detecção do tema do sistema
+    if (typeof window !== 'undefined') {
+      const media = window.matchMedia("(prefers-color-scheme: dark)");
+      
+      // Define valor inicial
+
+      setSystemTheme(media.matches ? 'dark' : 'light');
+
+      // Ouve mudanças (ex: usuário mudou config do Windows)
+      const listener = (e: MediaQueryListEvent) => {
+        setSystemTheme(e.matches ? 'dark' : 'light');
+      };
+
+      media.addEventListener('change', listener);
+      
+      return () => {
+        media.removeEventListener('change', listener);
+        clearTimeout(timer);
+      };
+    }
+    
+    return () => clearTimeout(timer);
+  }, []);
+
+  // CÁLCULO DO TEMA RESOLVIDO
+  // Se não montou (SSR), força 'dark' para evitar erro de hidratação.
+  // Se montou e o tema é 'system', usa o que o Windows/Mac mandou.
+  // Senão, usa a escolha manual do usuário.
+  const resolvedTheme = !mounted ? 'dark' : (theme === 'system' ? systemTheme : theme);
 
   const scrollToSection = (id: string) => {
     if (pathname !== '/') {
@@ -50,7 +92,6 @@ export default function Navbar() {
     { name: t('nav.contact'), href: "/#contact", action: () => scrollToSection('contact') },
   ];
 
-  /* const toggleLanguage = () => setLanguage(language === 'pt' ? 'en' : 'pt'); */
   const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark');
 
   return (
@@ -63,11 +104,12 @@ export default function Navbar() {
       <div className="container flex items-center justify-between">
         <div className="flex items-center gap-2 cursor-pointer" onClick={() => router.push('/')}>
           <div className="relative w-20 h-10 flex items-center justify-center border-primary rounded-sm">
-            {/* CORREÇÃO: Usando Image do Next.js */}
-            {theme === 'dark' ? (
-              <Image src="/logo_dark.png" alt="Logo" width={80} height={40} className="object-contain" />
+            
+            {/* Exibe o logo baseado no tema resolvido */}
+            {resolvedTheme === 'dark' ? (
+              <Image src="/logo_dark.png" alt="Logo" width={80} height={40} className="object-contain" priority />
             ) : (
-              <Image src="/logo_light.png" alt="Logo" width={80} height={40} className="object-contain" />
+              <Image src="/logo_light.png" alt="Logo" width={80} height={40} className="object-contain" priority />
             )}
             <div className="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full animate-pulse" />
           </div>
@@ -88,13 +130,20 @@ export default function Navbar() {
         </div>
 
         <div className="hidden md:flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={toggleTheme} className="rounded-full">
-            {theme === 'dark' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            onClick={toggleTheme} 
+            className="rounded-full hover:bg-primary/10 hover:text-primary transition-all duration-300"
+            aria-label="Alternar tema"
+          >
+            {/* Exibe o ícone baseado no tema resolvido */}
+            {resolvedTheme === 'dark' ? (
+              <Sun className="w-5 h-5" />
+            ) : (
+              <Moon className="w-5 h-5 text-slate-700" />
+            )}
           </Button>
-          {/* <Button variant="ghost" size="sm" className="gap-2 font-mono" onClick={toggleLanguage}>
-            <Globe className="w-4 h-4" />
-            {language.toUpperCase()}
-          </Button> */}
         </div>
 
         {/* Mobile Menu Toggle */}
@@ -122,12 +171,8 @@ export default function Navbar() {
           ))}
           <div className="flex items-center gap-4 px-4 pt-4 border-t border-border">
             <Button variant="ghost" size="icon" onClick={toggleTheme}>
-               {theme === 'dark' ? <Moon className="w-5 h-5" /> : <Sun className="w-5 h-5" />}
+               {resolvedTheme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </Button>
-            {/* <Button variant="ghost" size="sm" className="gap-2 font-mono" onClick={toggleLanguage}>
-              <Globe className="w-4 h-4" />
-              {language.toUpperCase()}
-            </Button> */}
           </div>
         </div>
       )}

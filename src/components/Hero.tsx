@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/src/components/ui/button";
-import { ArrowRight, Code, PenTool } from "lucide-react";
+import { ArrowRight} from "lucide-react";
 import { useLanguage } from "@/src/contexts/LanguageContext";
 import { useState } from "react";
 import ProjectModal from "./ProjectModal";
