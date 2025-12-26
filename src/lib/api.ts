@@ -15,7 +15,7 @@ export async function getSiteData() {
       {
         cache: 'force-cache', 
         next: {
-          revalidate: 60 * 10, // 10 minutos
+          revalidate: 5, // 5 segundos
         },
       },
     );
@@ -43,7 +43,7 @@ export async function getProjectById(id: string): Promise<Project | null> {
       {
         cache: 'force-cache',
         next: {
-          revalidate: 60 * 10,
+          revalidate: 5,
         },
       },
     );
