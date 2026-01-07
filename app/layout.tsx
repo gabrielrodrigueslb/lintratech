@@ -44,21 +44,13 @@ export const metadata: Metadata = {
   description:
     "A Lintra Tech desenvolve sites, sistemas e aplicações web modernas, focadas em performance, SEO e experiência do usuário.",
   keywords: [
-    "desenvolvimento web",
-    "criação de sites",
-    "sistemas web",
-    "software sob medida",
-    "frontend",
-    "react",
-    "next.js",
-    "lintra tech",
-    "Aplicativo",
-    "Sistema",
-    "ERP",
-    "Sistema empresarial",
-    "Programador",
-    "Landing page"
-  ],
+  "sistema de agendamento",
+  "crm para empresas",
+  "desenvolvimento de sistemas web",
+  "criação de sites profissionais",
+  "next.js",
+  "lintra tech"
+],
   authors: [{ name: "Lintra Tech" }],
   creator: "Lintra Tech",
   publisher: "Lintra Tech",
@@ -130,6 +122,25 @@ export default async function RootLayout({
       >
         <Providers siteData={siteData}>{children}</Providers>
       </body>
+      <script
+  type="application/ld+json"
+  dangerouslySetInnerHTML={{
+    __html: JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      name: "Lintra Tech",
+      url: "https://www.lintratech.cloud",
+      logo: "https://www.lintratech.cloud/icon.png",
+      sameAs: [
+        "https://www.instagram.com/lintratech",
+        "https://www.linkedin.com/company/lintratech"
+      ]
+    }),
+  }}
+/>
+
     </html>
   );
+
+  
 }
