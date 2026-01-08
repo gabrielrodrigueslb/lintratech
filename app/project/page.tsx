@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react"; // Adicionado useMemo
 import Link from "next/link";
 import Image from "next/image";
 
@@ -26,7 +26,7 @@ export default function Catalog() {
   const [activeCategory, setActiveCategory] = useState<number | "ALL">("ALL");
   const [searchQuery, setSearchQuery] = useState("");
 
-  // 🔹 Buscar categorias
+  // 🔹 Buscar todas as categorias na API
   useEffect(() => {
     async function loadCategories() {
       try {
@@ -40,7 +40,16 @@ export default function Catalog() {
     loadCategories();
   }, []);
 
-  const filteredProjects = projects.filter(project => {
+  // 🔹 Lógica para filtrar apenas categorias que têm projetos
+  const visibleCategories = useMemo(() => {
+    // 1. Cria um conjunto (Set) com os IDs das categorias usadas nos projetos
+    const usedCategoryIds = new Set(projects.map((p) => p.category.id));
+    
+    // 2. Filtra a lista de categorias da API para manter apenas as que estão no Set
+    return categories.filter((cat) => usedCategoryIds.has(cat.id));
+  }, [projects, categories]);
+
+  const filteredProjects = projects.filter((project) => {
     const matchesCategory =
       activeCategory === "ALL" || project.category.id === activeCategory;
 
@@ -57,7 +66,6 @@ export default function Catalog() {
 
       <main className="pt-32 pb-24">
         <div className="container">
-
           {/* HEADER */}
           <div className="mb-16">
             <h2 className="font-mono text-primary tracking-widest mb-4 text-sm uppercase">
@@ -79,7 +87,8 @@ export default function Catalog() {
                   ALL
                 </Button>
 
-                {categories.map(cat => (
+                {/* Alterado de categories.map para visibleCategories.map */}
+                {visibleCategories.map((cat) => (
                   <Button
                     key={cat.id}
                     variant={activeCategory === cat.id ? "default" : "outline"}
@@ -98,7 +107,7 @@ export default function Catalog() {
                   placeholder="Buscar projetos..."
                   className="pl-10 rounded-none"
                   value={searchQuery}
-                  onChange={e => setSearchQuery(e.target.value)}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </div>
             </div>
@@ -106,7 +115,7 @@ export default function Catalog() {
 
           {/* GRID */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredProjects.map(project => (
+            {filteredProjects.map((project) => (
               <Card
                 key={project.id}
                 className="group rounded-none border-border overflow-hidden hover:border-primary transition"
@@ -137,7 +146,7 @@ export default function Catalog() {
                   </p>
 
                   <div className="flex gap-2 flex-wrap">
-                    {project.tags.slice(0, 2).map(tag => (
+                    {project.tags.slice(0, 2).map((tag) => (
                       <Badge
                         key={tag}
                         variant="outline"
