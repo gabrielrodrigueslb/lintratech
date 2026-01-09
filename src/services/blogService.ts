@@ -4,7 +4,7 @@ import { Post } from '../types/project';
 export const blogService = {
   // Busca todos os posts (pode passar filtros query params se precisar)
   getAllPosts: async (status: string = 'PUBLISHED'): Promise<Post[]> => {
-    const { data } = await api.get(`/api/posts`);
+    const { data } = await api.get(`/api/posts?status=PUBLISHED`);
     return data;
   },
 
