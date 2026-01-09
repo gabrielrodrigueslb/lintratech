@@ -102,7 +102,7 @@ export default function BlogPost() {
               )}
             </div>
             
-            <h1 className="font-display font-bold text-xl sm:2xl md:text-4xl lg:text-5xl max-w-4xl mb-6 text-white shadow-black drop-shadow-lg">
+            <h1 className="font-display font-bold text-2xl sm:2xl md:text-4xl lg:text-5xl max-w-4xl mb-6 text-white shadow-black drop-shadow-lg">
               {post.title}
             </h1>
             
