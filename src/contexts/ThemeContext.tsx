@@ -25,34 +25,46 @@ export function ThemeProvider({
   defaultTheme = "system",
   storageKey = "vite-ui-theme",
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(defaultTheme);
-
-  // Recupera o tema salvo
-  useEffect(() => {
-    const savedTheme = localStorage.getItem(storageKey) as Theme;
-    if (savedTheme) {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
-      setTheme(savedTheme);
+  
+  // Inicialização "Lazy" para evitar erro de hidratação/renderização
+  const [theme, setTheme] = useState<Theme>(() => {
+    if (typeof window !== "undefined") {
+      const savedTheme = localStorage.getItem(storageKey) as Theme;
+      if (savedTheme) {
+        return savedTheme;
+      }
     }
-  }, [storageKey]);
+    return defaultTheme;
+  });
 
-  // Aplica o tema no <html>
   useEffect(() => {
     const root = document.documentElement;
 
+    // Remove classes anteriores para evitar conflitos
     root.classList.remove("light", "dark");
 
+    // Lógica SYSTEM
     if (theme === "system") {
-      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-        .matches
-        ? "dark"
-        : "light";
-
-      root.classList.add(systemTheme);
+      const systemIsDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+      
+      if (systemIsDark) {
+        // Se sistema é Dark, remove .light (volta pro root escuro)
+        root.classList.remove("light");
+      } else {
+        // Se sistema é Light, adiciona .light
+        root.classList.add("light");
+      }
       return;
     }
 
-    root.classList.add(theme);
+    // Lógica MANUAL
+    if (theme === "light") {
+      root.classList.add("light");
+    } else {
+      // Se for dark, garante que não tenha a classe light
+      root.classList.remove("light");
+    }
+    
   }, [theme]);
 
   const value = {

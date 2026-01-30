@@ -6,56 +6,13 @@ import { Badge } from '@/src/components/ui/badge';
 import { useLanguage } from '@/src/contexts/LanguageContext';
 import Link from 'next/link';
 import Image from 'next/image'; // 1. Importe o componente Image
-
-const projects = [
-  {
-    id: 7,
-    title: 'Hub de Links | Bio Connect',
-    category: 'WEB APPLICATION',
-    tags: ['REDES SOCIAIS', 'MARKETING', 'MOBILE FIRST'],
-    image: '/capa-insta.png',
-    description: "Uma solução de 'Link na Bio' totalmente personalizável.",
-  },
-
-  {
-    id: 8,
-    title: 'Sistema de Agendamentos | SmartSchedule',
-    category: 'WEB APPLICATION',
-    tags: ['AGENDAMENTOS', 'SAAS', 'UX/UI', 'ESCALABILIDADE'],
-    image:
-      'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1000&q=80',
-    description:
-      'Plataforma para agendamentos online de barbearias e salões, com gestão de serviços, horários, profissionais e clientes.',
-  },
-
-  {
-    id: 9,
-    title: 'Sistema de Gestão Escolar | EduManager',
-    category: 'WEB SYSTEM',
-    tags: ['GESTÃO ESCOLAR', 'ADMINISTRATIVO', 'DASHBOARD', 'AUTOMAÇÃO'],
-    image:
-      'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&w=1000&q=80',
-    description:
-      'Sistema web para gestão escolar com controle de matrículas, alunos, responsáveis, formulários online e painel administrativo.',
-  },
-
-  {
-    id: 10,
-    title: 'Painel Administrativo | ERP Empresarial',
-    category: 'ADMIN DASHBOARD',
-    tags: ['ERP', 'ADMINISTRATIVO', 'GESTÃO', 'NEGÓCIOS'],
-    image:
-      'https://images.unsplash.com/photo-1556155092-8707de31f9c4?auto=format&fit=crop&w=1000&q=80',
-    description:
-      'Painel administrativo (ERP) para controle de produtos, serviços, usuários e operações, com visual moderno e foco em produtividade.',
-  },
-];
-
-
+import { useSiteData } from '../contexts/siteDataContext';
 
 
 export default function Portfolio() {
   const { t } = useLanguage();
+  const projects = useSiteData()
+  console.log(projects)
 
   return (
     <section id="portfolio" className="py-24 bg-background relative">
@@ -81,7 +38,7 @@ export default function Portfolio() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 reveal-grid">
-          {projects.map((project) => (
+          { projects.map((project) => (
             <Link key={project.id} href={`/project/${project.id}`}>
               <Card className="bg-card border-border overflow-hidden group rounded-none hover:border-primary transition-colors duration-300 cursor-pointer h-full flex flex-col">
                 <div className="relative aspect-video overflow-hidden">
@@ -89,10 +46,10 @@ export default function Portfolio() {
 
                   {/* 2. Substituição da tag img por Image */}
                   <Image
-                    src={project.image}
+                    src={project.banner}
                     alt={project.title}
                     fill // Preenche o contêiner relativo pai
-                    className="object-cover transition-transform duration-700 group-hover:scale-105 grayscale group-hover:grayscale-0"
+                    className="object-cover transition-transform duration-700 group-hover:scale-105 md:grayscale group-hover:grayscale-0"
                     sizes="(max-width: 768px) 100vw, 50vw" // Ajuda o Next a escolher o tamanho da imagem
                   />
 
@@ -111,7 +68,7 @@ export default function Portfolio() {
                   <div className="flex justify-between items-start">
                     <div className="space-y-1">
                       <h4 className="font-mono text-xs text-primary tracking-wider uppercase">
-                        {project.category}
+                        {project.category.name}
                       </h4>
                       <h3 className="font-display font-bold text-xl md:text-2xl group-hover:text-primary transition-colors">
                         {project.title}

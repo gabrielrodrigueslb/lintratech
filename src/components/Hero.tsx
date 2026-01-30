@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/src/components/ui/button";
-import { ArrowRight, Code, PenTool } from "lucide-react";
+import { ArrowRight} from "lucide-react";
 import { useLanguage } from "@/src/contexts/LanguageContext";
 import { useState } from "react";
 import ProjectModal from "./ProjectModal";
@@ -31,7 +31,7 @@ export default function Hero() {
           </div>
           
           <div className="relative mb-12">
-            <h1 className="font-display font-bold text-5xl md:text-7xl lg:text-8xl leading-[1.1] tracking-tight mb-6 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
+            <h1 className="font-display font-bold text-5xl md:text-6xl lg:text-[82px] leading-[1.1] tracking-tight mb-6 animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-200">
               {t('hero.title.1')} <br />
               <span className="text-transparent bg-clip-text bg-linear-to-r from-primary to-primary/60">
                 {t('hero.title.2')}
@@ -39,7 +39,7 @@ export default function Hero() {
             </h1>
           </div>
           
-          <p className="text-muted-foreground max-w-xl text-lg md:text-xl mb-12 font-light leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-600">
+          <p className="text-muted-foreground max-w-xl text-lg md:text-lg mb-12 font-light leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-1000 delay-600">
             {t('hero.subtitle')}
           </p>
           
