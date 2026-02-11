@@ -6,7 +6,6 @@ import { Button } from '@/src/components/ui/button';
 import {
   ArrowLeft,
   ExternalLink,
-  Github,
   Calendar,
   Layers,
   Code,

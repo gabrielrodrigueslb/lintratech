@@ -1,6 +1,5 @@
-"use client";
-
-import { useParams } from "next/navigation";
+﻿import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/src/components/ui/button";
@@ -8,87 +7,152 @@ import { ArrowLeft, Calendar, User, Clock, Share2, Linkedin, Twitter, Facebook }
 import Navbar from "@/src/components/Navbar";
 import Contact from "@/src/components/Contact";
 import { Badge } from "@/src/components/ui/badge";
-import ReactMarkdown from 'react-markdown';
-import { useBlog } from "@/src/contexts/BlogContext";
-import { useEffect, useState } from "react";
-import { Post } from "@/src/types/project"; // Certifique-se que o import está correto (project ou post)
-import { useRouter } from "next/navigation";
+import ReactMarkdown from "react-markdown";
+import { Post } from "@/src/types/project";
 
-export default function BlogPost() {
-  const params = useParams();
-  const router = useRouter()
-  
-  const slug = typeof params?.id === 'string' ? params.id : '';
-  
-  const { getPost, isLoading } = useBlog();
-  const [post, setPost] = useState<Post | null>(null);
-  
-  // Inicializa loading se tiver slug
-  const [isFetching, setIsFetching] = useState(!!slug);
+const SITE_URL = "https://www.lintratech.cloud";
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-  useEffect(() => {
-    if (slug) {
-      // CORREÇÃO ESLint: Removemos setIsFetching(true) síncrono daqui.
-      // Se quiser limpar o post anterior enquanto carrega o novo, use setPost(null).
-      // Caso contrário, ele mostrará o post antigo até o novo carregar (melhor UX).
-      
-      getPost(slug)
-        .then((data) => setPost(data))
-        .catch((err) => console.error(err))
-        .finally(() => setIsFetching(false));
-    }
-  }, [slug, getPost]);
+export const revalidate = 300;
 
-  const formatPostDate = (dateString?: string | null) => {
-    if (!dateString) return "";
-    return new Date(dateString).toLocaleDateString('pt-BR', {
-      day: 'numeric',
-      month: 'numeric',
-      year: 'numeric'
-    });
-  };
+async function fetchPost(slug: string): Promise<Post | null> {
+  if (!API_URL) return null;
 
-  if (isFetching || (isLoading && !post)) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
-  }
+  const res = await fetch(`${API_URL}/api/posts/slug/${slug}`, {
+    next: { revalidate },
+  });
+
+  if (res.status === 404) return null;
+  if (!res.ok) throw new Error("Falha ao buscar post");
+
+  return res.json();
+}
+
+function toPlainText(value?: string, maxLength = 160) {
+  if (!value) return "";
+  const withoutMd = value
+    .replace(/\n/g, " ")
+    .replace(/\[([^\]]+)\]\([^\)]+\)/g, "$1")
+    .replace(/[*_`>#-]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  if (withoutMd.length <= maxLength) return withoutMd;
+  return `${withoutMd.slice(0, maxLength - 3).trim()}...`;
+}
+
+function absoluteUrl(url?: string) {
+  if (!url) return "";
+  if (url.startsWith("http")) return url;
+  return `${SITE_URL}${url.startsWith("/") ? "" : "/"}${url}`;
+}
+
+function formatPostDate(dateString?: string | null) {
+  if (!dateString) return "";
+  return new Date(dateString).toLocaleDateString("pt-BR", {
+    day: "numeric",
+    month: "numeric",
+    year: "numeric",
+  });
+}
+
+export async function generateMetadata(
+  { params }: { params: { id: string } }
+): Promise<Metadata> {
+  const slug = params?.id;
+  const post = slug ? await fetchPost(slug) : null;
 
   if (!post) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center text-foreground">
-        <div className="text-center">
-          <h1 className="text-4xl font-bold mb-4">Artigo não encontrado.</h1>
-          <p className="text-muted-foreground mb-8">O artigo &quot;{slug}&quot; não existe ou foi removido.</p>
-          <button onClick={() => router.back()} >
-            <Button>Voltar para o Blog</Button>
-          </button>
-        </div>
-      </div>
-    );
+    return {
+      title: "Artigo nao encontrado",
+      robots: { index: false, follow: false },
+    };
   }
+
+  const description = post.excerpt || toPlainText(post.content, 160);
+  const canonical = `${SITE_URL}/blog/${post.slug}`;
+  const imageUrl = post.featuredImage ? absoluteUrl(post.featuredImage) : undefined;
+
+  return {
+    title: post.title,
+    description,
+    alternates: { canonical },
+    openGraph: {
+      title: post.title,
+      description,
+      url: canonical,
+      type: "article",
+      publishedTime: post.publishedAt || post.createdAt,
+      modifiedTime: post.updatedAt,
+      authors: post.author ? [post.author] : undefined,
+      images: imageUrl
+        ? [{ url: imageUrl, width: 1200, height: 630, alt: post.title }]
+        : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description,
+      images: imageUrl ? [imageUrl] : undefined,
+    },
+  };
+}
+
+export default async function BlogPost({ params }: { params: { id: string } }) {
+  const slug = params?.id || "";
+  const post = slug ? await fetchPost(slug) : null;
+
+  if (!post) {
+    notFound();
+  }
+
+  const description = post.excerpt || toPlainText(post.content, 160);
+  const imageUrl = post.featuredImage ? absoluteUrl(post.featuredImage) : undefined;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description,
+    image: imageUrl ? [imageUrl] : undefined,
+    datePublished: post.publishedAt || post.createdAt,
+    dateModified: post.updatedAt,
+    author: {
+      "@type": "Person",
+      name: post.author || "Lintra Tech",
+    },
+    publisher: {
+      "@type": "Organization",
+      name: "Lintra Tech",
+      logo: {
+        "@type": "ImageObject",
+        url: `${SITE_URL}/icon.png`,
+      },
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": `${SITE_URL}/blog/${post.slug}`,
+    },
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground selection:bg-primary selection:text-black">
       <Navbar />
-      
+
       <main className="pt-24 pb-16 animate-in fade-in duration-500">
         <div className="w-full h-[40vh] md:h-[50vh] relative overflow-hidden">
           <div className="absolute inset-0 bg-black/40 z-10" />
-          
+
           {post.featuredImage && (
-            // CORREÇÃO TS2322: Casting explícito para garantir string
-            <Image 
-              src={post.featuredImage as string} 
-              alt={post.title} 
+            <Image
+              src={post.featuredImage as string}
+              alt={post.title}
               fill
               priority
               className="object-cover"
             />
           )}
-          
+
           <div className="absolute bottom-0 left-0 w-full z-20 container pb-8 md:pb-12">
             <div className="flex flex-col">
               <Link href="/blog">
@@ -96,27 +160,31 @@ export default function BlogPost() {
                   <ArrowLeft className="w-4 h-4" /> Retornar para o Blog
                 </Button>
               </Link>
-              
+
               {post.category && (
                 <Badge className="mb-3 sm:mb-4 bg-primary text-black hover:bg-primary/90 border-none w-fit">
                   {post.category.name}
                 </Badge>
               )}
             </div>
-            
-            <h1 className="font-display font-bold text-2xl sm:2xl md:text-4xl lg:text-5xl max-w-4xl mb-6 text-white shadow-black drop-shadow-lg max-md:line-clamp-2">
+
+            <h1 className="font-display font-bold text-2xl sm:2xl md:text-4xl lg:text-5xl max-w-4xl mb-6 text-white shadow-black drop-shadow-lg line-clamp-2">
               {post.title}
             </h1>
-            
+
             <div className="flex flex-wrap items-center gap-6 text-white/80 font-mono text-sm">
-              <div className="flex items-center gap-2">
-                <User className="w-4 h-4" />
-                {post.author}
-              </div>
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4" />
-                {formatPostDate(post.publishedAt || post.createdAt)}
-              </div>
+              {post.author && (
+                <div className="flex items-center gap-2">
+                  <User className="w-4 h-4" />
+                  {post.author}
+                </div>
+              )}
+              {(post.publishedAt || post.createdAt) && (
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4" />
+                  {formatPostDate(post.publishedAt || post.createdAt)}
+                </div>
+              )}
               {post.readTime && (
                 <div className="flex items-center gap-2">
                   <Clock className="w-4 h-4" />
@@ -128,7 +196,6 @@ export default function BlogPost() {
         </div>
 
         <div className="container mt-16 grid grid-cols-1 lg:grid-cols-12 gap-12">
-          {/* Sidebar Social */}
           <div className="lg:col-span-2 hidden lg:block">
             <div className="sticky top-32 space-y-4">
               <p className="text-xs font-mono text-muted-foreground uppercase mb-4">Compartilhar</p>
@@ -149,8 +216,12 @@ export default function BlogPost() {
             </div>
           </div>
 
-          {/* Conteúdo */}
           <div className="lg:col-span-8 prose prose-lg dark:prose-invert max-w-none prose-headings:font-display prose-headings:font-bold prose-a:text-primary prose-img:rounded-lg">
+            <script
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+            />
+
             <div className="whitespace-pre-wrap font-sans text-lg leading-relaxed">
               <ReactMarkdown
                 components={{
@@ -168,28 +239,27 @@ export default function BlogPost() {
                   li: ({ ...props }) => <li className="leading-relaxed" {...props} />,
                   a: ({ ...props }) => <a className="text-primary underline underline-offset-4" {...props} />,
                   img: ({ src, alt }) => (
-                      <div className="relative w-full h-auto my-8 rounded-xl overflow-hidden">
-                        {/* CORREÇÃO TS2322: Garantindo string ou fallback */}
-                        <Image 
-                          src={(src as string) || ""} 
-                          alt={alt || "Imagem do post"}
-                          width={800} 
-                          height={450}
-                          className="w-full h-auto object-cover"
-                        />
-                      </div>
-                  )
+                    <div className="relative w-full h-auto my-8 rounded-xl overflow-hidden">
+                      <Image
+                        src={(src as string) || ""}
+                        alt={alt || "Imagem do post"}
+                        width={800}
+                        height={450}
+                        className="w-full h-auto object-cover"
+                      />
+                    </div>
+                  ),
                 }}
               >
                 {post.content}
               </ReactMarkdown>
             </div>
           </div>
-          
+
           <div className="lg:col-span-2 hidden lg:block"></div>
         </div>
       </main>
-      
+
       <Contact />
     </div>
   );

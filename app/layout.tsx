@@ -50,6 +50,9 @@ export const metadata: Metadata = {
     'criação de sites profissionais',
     'next.js',
     'lintra tech',
+    'lintratech',
+    'landingpages',
+    'site'
   ],
   authors: [{ name: 'Lintra Tech' }],
   creator: 'Lintra Tech',
