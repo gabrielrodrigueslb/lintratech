@@ -88,7 +88,7 @@ export default function Navbar() {
     { name: t('nav.portfolio'), href: "/#portfolio", action: () => scrollToSection('portfolio') },
     { name: t('nav.about'), href: "/#about", action: () => scrollToSection('about') },
     { name: t('nav.services'), href: "/#services", action: () => scrollToSection('services') },
-    { name: t('nav.blog'), href: "/blog", action: () => { router.push('/blog'); setIsMobileMenuOpen(false); } },
+    { name: t('nav.blog'), href: "/#blogsection", action: () => scrollToSection('blogsection') },
     { name: t('nav.contact'), href: "/#contact", action: () => scrollToSection('contact') },
   ];
 

@@ -25,7 +25,7 @@ export default function About() {
                 alt="Lintra Tech Team Banner" 
                 width={800} 
                 height={600} 
-                className="w-full h-auto md:grayscale md:hover:grayscale-0 transition-all duration-500"
+                className="w-full h-auto transition-all duration-500"
                 priority
               />
               

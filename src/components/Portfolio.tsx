@@ -12,7 +12,6 @@ import { useSiteData } from '../contexts/siteDataContext';
 export default function Portfolio() {
   const { t } = useLanguage();
   const projects = useSiteData()
-  console.log(projects)
 
   return (
     <section id="portfolio" className="py-24 bg-background relative">
@@ -49,7 +48,7 @@ export default function Portfolio() {
                     src={project.banner}
                     alt={project.title}
                     fill // Preenche o contêiner relativo pai
-                    className="object-cover transition-transform duration-700 group-hover:scale-105 md:grayscale group-hover:grayscale-0"
+                    className="object-cover transition-transform duration-700 "
                     sizes="(max-width: 768px) 100vw, 50vw" // Ajuda o Next a escolher o tamanho da imagem
                   />
 

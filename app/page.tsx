@@ -6,6 +6,7 @@ import About from '@/src/components/About';
 import Services from '@/src/components/Services';
 import Contact from '@/src/components/Contact';
 import { useScrollReveal } from '@/src/hooks/useScrollReveal';
+import BlogSection from '@/src/components/blog';
 
 export default function HomePage() {
   useScrollReveal();
@@ -17,6 +18,7 @@ export default function HomePage() {
         <Portfolio />
         <About />
         <Services />
+        <BlogSection/>
       </main>
       <Contact />
     </div>
