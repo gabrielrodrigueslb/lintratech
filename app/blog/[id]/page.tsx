@@ -57,9 +57,10 @@ function formatPostDate(dateString?: string | null) {
 }
 
 export async function generateMetadata(
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ): Promise<Metadata> {
-  const slug = params?.id;
+  const { id } = await params;
+  const slug = id || "";
   const post = slug ? await fetchPost(slug) : null;
 
   if (!post) {
@@ -98,8 +99,9 @@ export async function generateMetadata(
   };
 }
 
-export default async function BlogPost({ params }: { params: { id: string } }) {
-  const slug = params?.id || "";
+export default async function BlogPost({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const slug = id || "";
   const post = slug ? await fetchPost(slug) : null;
 
   if (!post) {
