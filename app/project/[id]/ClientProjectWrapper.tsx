@@ -119,7 +119,7 @@ export default function ClientProjectWrapper({
                   src={project.banner}
                   alt="Project Detail"
                   fill
-                  className="rounded-sm border border-border md:grayscale hover:grayscale-0 transition-all duration-500 object-cover"
+                  className="rounded-sm border border-border transition-all duration-500 object-cover"
                 />
               </div>
             </div>
@@ -182,7 +182,7 @@ export default function ClientProjectWrapper({
                     >
                       <Button className="w-full bg-primary text-black hover:bg-primary/90 font-bold">
                         <ExternalLink className="w-4 h-4 mr-2" />{' '}
-                        {t('project.visit')}
+                        Conheçer o Projeto
                       </Button>
                     </a>
                   ) : (
@@ -191,16 +191,9 @@ export default function ClientProjectWrapper({
                       disabled
                     >
                       <ExternalLink className="w-4 h-4 mr-2" />{' '}
-                      {t('project.visit')}
+                      Conheçer o Projeto
                     </Button>
                   )}
-
-                  <Button
-                    variant="outline"
-                    className="w-full border-border hover:bg-muted"
-                  >
-                    <Github className="w-4 h-4 mr-2" /> Source Code
-                  </Button>
                 </div>
               </div>
             </div>

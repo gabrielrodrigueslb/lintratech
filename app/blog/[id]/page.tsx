@@ -12,9 +12,11 @@ import ReactMarkdown from 'react-markdown';
 import { useBlog } from "@/src/contexts/BlogContext";
 import { useEffect, useState } from "react";
 import { Post } from "@/src/types/project"; // Certifique-se que o import está correto (project ou post)
+import { useRouter } from "next/navigation";
 
 export default function BlogPost() {
   const params = useParams();
+  const router = useRouter()
   
   const slug = typeof params?.id === 'string' ? params.id : '';
   
@@ -60,9 +62,9 @@ export default function BlogPost() {
         <div className="text-center">
           <h1 className="text-4xl font-bold mb-4">Artigo não encontrado.</h1>
           <p className="text-muted-foreground mb-8">O artigo &quot;{slug}&quot; não existe ou foi removido.</p>
-          <Link href="/blog">
+          <button onClick={() => router.back()} >
             <Button>Voltar para o Blog</Button>
-          </Link>
+          </button>
         </div>
       </div>
     );
@@ -102,7 +104,7 @@ export default function BlogPost() {
               )}
             </div>
             
-            <h1 className="font-display font-bold text-2xl sm:2xl md:text-4xl lg:text-5xl max-w-4xl mb-6 text-white shadow-black drop-shadow-lg">
+            <h1 className="font-display font-bold text-2xl sm:2xl md:text-4xl lg:text-5xl max-w-4xl mb-6 text-white shadow-black drop-shadow-lg max-md:line-clamp-2">
               {post.title}
             </h1>
             

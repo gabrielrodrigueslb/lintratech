@@ -2,6 +2,7 @@
 import { Button } from '@/src/components/ui/button';
 import { ArrowRight, Palette, Layout, Smartphone } from 'lucide-react';
 import { useLanguage } from '@/src/contexts/LanguageContext';
+import Link from 'next/link';
 
 export default function Services() {
   const { t } = useLanguage();
@@ -30,7 +31,7 @@ export default function Services() {
   return (
     <section id="services" className="py-24 bg-card/30 relative">
       <div className="container">
-        <div className="mb-16 max-w-3xl reveal">
+        <div className="mb-16 max-w-3xl reveal items-center">
           <h2 className="font-mono text-primary tracking-widest mb-2 text-sm uppercase">
             {t('services.subtitle')}
           </h2>
@@ -72,7 +73,7 @@ export default function Services() {
                   ))}
                 </div>
 
-                <a href="#portfolio">
+                <Link href="/project">
                   <Button
                     variant="link"
                     className="p-0 h-auto text-primary font-mono text-sm group-hover:translate-x-2 transition-transform"
@@ -80,7 +81,7 @@ export default function Services() {
                     {t('services.viewProjects')}{' '}
                     <ArrowRight className="ml-2 w-4 h-4" />
                   </Button>
-                </a>
+                </Link>
               </div>
             </div>
           ))}

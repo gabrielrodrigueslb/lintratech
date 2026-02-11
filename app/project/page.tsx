@@ -82,9 +82,9 @@ export default function Catalog() {
                 <Button
                   variant={activeCategory === "ALL" ? "default" : "outline"}
                   onClick={() => setActiveCategory("ALL")}
-                  className="rounded-none font-mono text-xs"
+                  className="rounded-none font-mono text-xs uppercase"
                 >
-                  ALL
+                  Todos
                 </Button>
 
                 {/* Alterado de categories.map para visibleCategories.map */}
@@ -174,7 +174,7 @@ export default function Catalog() {
                     }
                   >
                     <MessageSquare className="w-3 h-3 mr-1" />
-                    CONTATO
+                    VER PROJETO
                   </Button>
                 </CardFooter>
               </Card>
